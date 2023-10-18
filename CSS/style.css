@@ -135,6 +135,12 @@ td button{
     margin-left: 10px;
 }
 
+td button:disabled{
+    border: #111 2px solid;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
 td{
     padding: 0.5em;
 }

@@ -1,3 +1,4 @@
+//Global variables
 let nameInput = document.getElementById("contact-name");
 let numberInput = document.getElementById("contact-number");
 let createContactBtn = document.getElementById("create-contact-btn");
@@ -6,88 +7,100 @@ const noContactsMsg = document.getElementById("no-contacts");
 
 createContactBtn.disabled = true;
 
-nameInput.addEventListener("input", validateInput);
-numberInput.addEventListener("input", validateInput);
+//Eventlisteners
+nameInput.addEventListener("input", function () {
+  validateInput(createContactBtn, nameInput, numberInput);
+});
+numberInput.addEventListener("input", function () {
+  validateInput(createContactBtn, nameInput, numberInput);
+});
 createContactBtn.addEventListener("click", function () {
   createContactRow(nameInput, numberInput);
-  if (table.rows.length <= 2) {
-    noContactsMsg.style.display="block"
-  } else{
-    noContactsMsg.style.display="none"
-  }
 });
 
 
-
-function validateInput() {
+//Handles the validation of user input - if both input-elements is filled correctly --> enable the button
+//Using parameters to make the function reusable
+function validateInput(btn, nameInput, numInput) {
   let trimmedName = nameInput.value.trim();
-  let trimmedNumber = numberInput.value.trim();
+  let trimmedNumber = numInput.value.trim();
 
   if (trimmedName && trimmedNumber) {
-    createContactBtn.disabled = false;
+    btn.disabled = false;
   } else {
-    createContactBtn.disabled = true;
+    btn.disabled = true;
   }
 }
 
+//
 function createContactRow(name, number) {
+  //Declaring variables
   let row = table.insertRow(1);
   let nameCell = row.insertCell(0);
   let numberCell = row.insertCell(1);
   let modifyContactCell = row.insertCell(2);
-
   let contactName = name.value;
   let contactNumber = number.value;
-
   let createdContactName = document.createElement("input");
+  let createdContactNumber = document.createElement("input");
+  let editContactBtn = document.createElement("button");
+  let deleteContactBtn = document.createElement("Button");
+  
+  editContactBtn.innerText = "Ändra";
+  deleteContactBtn.innerText = "Ta bort";
+  
   createdContactName.setAttribute("type", "text");
   createdContactName.value = contactName;
   createdContactName.disabled = true;
-
-  let createdContactNumber = document.createElement("input");
+  
   createdContactNumber.setAttribute("type", "text");
   createdContactNumber.value = contactNumber;
   createdContactNumber.disabled = true;
+  
+  noContactsMsg.style.display = "none";
+
+  
+  //Eventlisteners
+  createdContactName.addEventListener("input", function () {
+    validateInput(editContactBtn, createdContactName, createdContactNumber);
+  });
+  createdContactNumber.addEventListener("input", function () {
+    validateInput(editContactBtn, createdContactName, createdContactNumber);
+  });
+  editContactBtn.addEventListener("click", function () {
+    updateButton(createdContactName, createdContactNumber, editContactBtn);
+  });
+  deleteContactBtn.addEventListener("click", function () {
+    deleteRow(row);
+  });
+  
 
   nameCell.appendChild(createdContactName);
   numberCell.appendChild(createdContactNumber);
 
-  let editContactBtn = document.createElement("button");
-  editContactBtn.innerText = "Ändra";
-  let deleteContactBtn = document.createElement("Button");
-  deleteContactBtn.innerText = "Ta bort";
-  //Function that handles changing of a created contact
-  editContactBtn.addEventListener("click", function () {
-    editContact(createdContactName, createdContactNumber, editContactBtn);
-  });
-
-  /* 
-    Function that handles the removing of a created contact, this by using the deleteRow() method to delete a row,
-    and rowIndex()-method to delete the current row-index  */
-  deleteContactBtn.addEventListener("click", function () {
-    table.deleteRow(row.rowIndex);
-  });
-
   modifyContactCell.append(editContactBtn, deleteContactBtn);
 }
 
-//Handles the event of making changes to a created contact
-function editContact(name, num, btn) {
+// handles switching button text according to it's innerText
+//Deciding when to enable/disable text-inputs
+function updateButton(name, num, btn) {
   if (btn.innerText === "Ändra") {
     name.disabled = false;
     num.disabled = false;
     btn.innerText = "Spara";
   } else {
-    let newName = name.value.trim();
-    let newNumber = num.value.trim();
-
-    if (newName === "" || newNumber === "") {
-      alert("Vänligen fyll i fälten korrekt");
-    } else {
-      name.disabled = true;
-      num.disabled = true;
-      btn.innerText = "Ändra";
-    }
+    name.disabled = true;
+    num.disabled = true;
+    btn.innerText = "Ändra";
   }
 }
 
+//Deleting the correct table-ro + decides if noContactsMsg is displayed or not
+function deleteRow(row) {
+  table.deleteRow(row.rowIndex);
+  if (table.rows.length <= 2) {
+    noContactsMsg.style.display = "block";
+  } else {
+    noContactsMsg.style.display = "none";
+  }
+}
