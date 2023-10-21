@@ -34,7 +34,6 @@ function validateInput(btn, nameInput, numInput) {
 
 //
 function createContactRow(name, number) {
-  //Declaring variables
   let row = table.insertRow(1);
   let nameCell = row.insertCell(0);
   let numberCell = row.insertCell(1);
@@ -46,21 +45,19 @@ function createContactRow(name, number) {
   let editContactBtn = document.createElement("button");
   let deleteContactBtn = document.createElement("Button");
   
+  createdContactName.setAttribute("type", "text");
+  createdContactNumber.setAttribute("type", "text");
   editContactBtn.innerText = "Ändra";
   deleteContactBtn.innerText = "Ta bort";
   
-  createdContactName.setAttribute("type", "text");
   createdContactName.value = contactName;
-  createdContactName.disabled = true;
-  
-  createdContactNumber.setAttribute("type", "text");
   createdContactNumber.value = contactNumber;
+  
+  createdContactName.disabled = true;
   createdContactNumber.disabled = true;
   
   noContactsMsg.style.display = "none";
 
-  
-  //Eventlisteners
   createdContactName.addEventListener("input", function () {
     validateInput(editContactBtn, createdContactName, createdContactNumber);
   });
@@ -68,22 +65,20 @@ function createContactRow(name, number) {
     validateInput(editContactBtn, createdContactName, createdContactNumber);
   });
   editContactBtn.addEventListener("click", function () {
-    updateButton(createdContactName, createdContactNumber, editContactBtn);
+    handleEdit(createdContactName, createdContactNumber, editContactBtn);
   });
   deleteContactBtn.addEventListener("click", function () {
     deleteRow(row);
   });
   
-
   nameCell.appendChild(createdContactName);
   numberCell.appendChild(createdContactNumber);
-
   modifyContactCell.append(editContactBtn, deleteContactBtn);
 }
 
 // handles switching button text according to it's innerText
 //Deciding when to enable/disable text-inputs
-function updateButton(name, num, btn) {
+function handleEdit(name, num, btn) {
   if (btn.innerText === "Ändra") {
     name.disabled = false;
     num.disabled = false;
@@ -95,7 +90,7 @@ function updateButton(name, num, btn) {
   }
 }
 
-//Deleting the correct table-ro + decides if noContactsMsg is displayed or not
+//Deleting the table-row + decides if noContactsMsg is displayed or not
 function deleteRow(row) {
   table.deleteRow(row.rowIndex);
   if (table.rows.length <= 2) {
